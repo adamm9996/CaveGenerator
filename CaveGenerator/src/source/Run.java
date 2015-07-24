@@ -2,20 +2,24 @@ package source;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-public class Run extends JPanel
+@SuppressWarnings("serial")
+public class Run extends JPanel implements MouseListener
 {
 	static JFrame frame = new JFrame();
 	static Run run = new Run();
 	int[][] map;
+	CaveGenerator caveGenerator;
 	
 	final static int blockSize = 5;		//size of each cell
 	final static int width = 200;		//width of map in cells
 	final static int height = 100;		//height of map in cells
-	final static int fillPercent = 101;	//percentage of map filled in
+	final static int fillPercent = 48;	//percentage of map filled in
 	final static int iterate = 10;		//number of iterations of the smoothing algorithm the generator does
 	final static boolean seeded = true;	//true: given string, false: random string
 	final static String seed = "cat";	//seed used to generate the map, if any
@@ -23,17 +27,22 @@ public class Run extends JPanel
 	
 	public static void main(String[] args)
 	{
-		CaveGenerator caveGenerator;
 		if (seeded)
-			caveGenerator = new CaveGenerator(width, height, fillPercent, iterate, seed);
+			run.caveGenerator = new CaveGenerator(width, height, fillPercent, iterate, seed);
 		else
-			caveGenerator = new CaveGenerator(width, height, fillPercent, iterate);
+			run.caveGenerator = new CaveGenerator(width, height, fillPercent, iterate);
 		
-		run.map = caveGenerator.generate();
+		run.map = run.caveGenerator.generate();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(width*blockSize, height*blockSize);
+		frame.setSize(width*blockSize+16, height*blockSize+39);
 		frame.add(run);
+		frame.addMouseListener(run);
 		frame.setVisible(true);
+		
+		while (true)
+		{
+			run.repaint();
+		}
 	}
 	
 	public void paint(Graphics g)
@@ -47,4 +56,23 @@ public class Run extends JPanel
 				g.fillRect(blockSize*w, blockSize*h, blockSize, blockSize);
 			}
 	}
+
+	@Override
+	public void mouseClicked(MouseEvent e)
+	{	
+			caveGenerator = new CaveGenerator(width, height, fillPercent, iterate);
+			run.map = run.caveGenerator.generate();
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e)	{}
+
+	@Override
+	public void mouseReleased(MouseEvent e)	{}
+
+	@Override
+	public void mouseEntered(MouseEvent e)	{}
+
+	@Override
+	public void mouseExited(MouseEvent e)	{}
 }
