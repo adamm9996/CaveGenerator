@@ -17,10 +17,12 @@ public class Run extends JPanel implements MouseListener
 	CaveGenerator caveGenerator;
 	
 	final static int blockSize = 5;		//size of each cell
-	final static int width = 200;		//width of map in cells
-	final static int height = 100;		//height of map in cells
-	final static int fillPercent = 48;	//percentage of map filled in
-	final static int iterate = 10;		//number of iterations of the smoothing algorithm the generator does
+	final static int width = 300;		//width of map in cells
+	final static int height = 50;		//height of map in cells
+	final static int fillPercent = 50;	//percentage of map filled in
+	final static int iterate = 100;		//number of iterations of the smoothing algorithm the generator does
+	final static int filledMinSize = 50;//removes any wall regions smaller than this value
+	final static int emptyMinSize = 50;	//removes any empty regions smaller than this value
 	final static boolean seeded = true;	//true: given string, false: random string
 	final static String seed = "cat";	//seed used to generate the map, if any
 	
@@ -28,9 +30,9 @@ public class Run extends JPanel implements MouseListener
 	public static void main(String[] args)
 	{
 		if (seeded)
-			run.caveGenerator = new CaveGenerator(width, height, fillPercent, iterate, seed);
+			run.caveGenerator = new CaveGenerator(width, height, fillPercent, iterate, filledMinSize, emptyMinSize, seed);
 		else
-			run.caveGenerator = new CaveGenerator(width, height, fillPercent, iterate);
+			run.caveGenerator = new CaveGenerator(width, height, fillPercent, iterate, filledMinSize, emptyMinSize);
 		
 		run.map = run.caveGenerator.generate();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -60,7 +62,7 @@ public class Run extends JPanel implements MouseListener
 	@Override
 	public void mouseClicked(MouseEvent e)
 	{	
-			caveGenerator = new CaveGenerator(width, height, fillPercent, iterate);
+			caveGenerator = new CaveGenerator(width, height, fillPercent, iterate, filledMinSize, emptyMinSize);
 			run.map = run.caveGenerator.generate();
 	}
 
